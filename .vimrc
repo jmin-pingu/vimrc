@@ -1,4 +1,5 @@
 " PLUGINS ---------------------------------------------------------- {{{
+" NAV: nav-plug
 call plug#begin('~/.vim/plugged')
 " Use release branch (recommended)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -25,28 +26,45 @@ call plug#end()
 " }}}
 
 " set color scheme
+" NAV: nav-colorscheme
 colorscheme twilight256
 
 " Map the leader key
+" NAV: nav-leader
 let g:mapleader=" "
 
 
+" Functions: fuctions to help with maps, abbreviations, and all things config ----------------------------------------------------------- {{{
+" NAV: nav-func
+
+" A useful function for eating a character
+" TODO: actually understand what the fuck this function does cause I just C-c
+" C-v'ed it from 
+func Eatchar(pat)
+	let c = nr2char(getchar(0))
+	return (c =~ a:pat) ? '' : c
+endfunc 
+"}}}
+
 " Macros: Mappings and Abbreviations ----------------------------------------------------------- {{{
-" NORMAL MODE MACROS: Use <leader>
-" Map Control + s to save
+" NAV: nav-map
+
+" NORMAL MODE MACROS: Use <leader> 				
+" NAV: nav-map-normal 
+
+" save fil 
 nnoremap <leader>sf :w<CR>
 
 " Quick edit of $MYVIMRC
 nnoremap <leader>ev :vsplit $MYVIMRC<cr>
 
 " Cut, Copy and Paste 
+" NAV: nav-map-normal-ccp
 " NOTE: need to fix the functionality of cut
-nnoremap <leader>xx <esc>"*y
 nnoremap <leader>xw <esc>viw"*yviwD
 nnoremap <leader>xl <esc>V"*yVd
 nnoremap <leader>xp <esc>vip"*yvipd
 
-nnoremap <leader>cc <esc>"*y
 nnoremap <leader>cw <esc>viw"*y
 nnoremap <leader>cl <esc>V"*y
 nnoremap <leader>cp <esc>vip"*y
@@ -88,7 +106,7 @@ nnoremap <leader>[w viw<esc>a]<esc>bi[<esc>lel
 nnoremap <leader>{w viw<esc>a}<esc>bi{<esc>lel
 nnoremap <leader><w viw<esc>a><esc>bi<<esc>lel
 
-" clear the highlighting of :set hlsearch.
+" clear the highlighting of :set hl earch.
 if maparg('<C-L>', 'n') ==# ''
 	nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 endif
@@ -104,6 +122,8 @@ nnoremap <leader>bn :bn<CR>
 nnoremap <leader>bp :bp<CR>
 
 " INSERT MODE MACROS: Do not use <leader>
+" NAV: nav-map-insert
+
 " quick escape with jk
 " NOTE: if this is used frequently, change the key combination appropriately
 inoremap jk <esc>
@@ -124,9 +144,10 @@ inoremap <C-d> <esc>ddi
 inoremap <c-v> <esc>"*pi
 
 " VISUAL MODE MACROS: Do not use <leader>
-" NOTE: need to add cut functionality
+" NAV: nav-map-visual
+vnoremap <leader>x "*y<esc>v`>d
 " copy selected text 
- noremap <S-c> "*y
+vnoremap <leader>cc "*y
 
 " Surround selected text with character
 vnoremap "" <esc>`>a"<esc>`<i"<esc>b
@@ -136,33 +157,76 @@ vnoremap [[ <esc>`>a]<esc>`<i[<esc>b
 vnoremap {{ <esc>`>a}<esc>`<i{<esc>b
 vnoremap << <esc>`>a><esc>`<i<<esc>b
 
+" OPERATOR PENDING MACROS: 
+" NAV: nav-map-op
+
+" NOTE: workflow for operator pending macros
+" 1) Start at cursor
+" 2) Enter visual mode
+" 3) KEY STEP: map keys
+" 4) text you want to include in the movement should be selected
+" Rules
+" if visually selected, operates on text 
+" else operates on text between original cursor position and new position
+
+" use vim motion for inside <sign>: i<sign>
+" text until return
+onoremap b /return<CR>
+
+" inside last/prev <sign>, inline
+onoremap il( :<c-u>normal! F(vi(<cr>
+onoremap il{ :<c-u>normal! F{vi{<cr>
+onoremap il[ :<c-u>normal! F[vi[<cr>
+onoremap il< :<c-u>normal! F<vi<<cr>
+onoremap il" :<c-u>normal! F"vi"<cr>
+onoremap il' :<c-u>normal! F'vi'<cr>
+onoremap il` :<c-u>normal! F`vi`<cr>
+
+" inside next <sign ,  inline
+onoremap in( :<c-u>normal! f(vi(<cr>
+onoremap in{ :<c-u>normal! f{vi{<cr>
+onoremap in[ :<c-u>normal! f[vi[<cr>
+onoremap in< :<c-u>normal! f<vi<<cr>
+onoremap in" :<c-u>normal! f"vi"<cr>
+onoremap in' :<c-u>normal! f'vi'<cr>
+onoremap in` :<c-u>normal! f`vi`<cr>
+
 " }}}
 
 " Training Wheels ----------------------------------------------------------- {{{
+" NAV: nav-training
 " macros 
 nnoremap 0 :echoe "Use H"<CR>
 nnoremap $ :echoe "Use L"<CR>
 noremap :w :echoe "Use \<leader\>sf"<CR>
 noremap :wq :echoe "Use \<leader\>sf"<CR>
-inoremap <esc> <esc>:echoe "Use jk"<CR>
 
 " navigation tools
 nnoremap 25j :echoe "Use J"<CR>
 nnoremap 25k :echoe "Use K"<CR>
 
+" window navigation
+nnoremap <C-w><C-w> :echoe "Use \<leader\>ww"<CR>
+nnoremap <C-w><C-h> :echoe "Use \<leader\>wh"<CR>
+nnoremap <C-w><C-l> :echoe "Use \<leader\>wl"<CR>
+nnoremap <C-w><C-k> :echoe "Use \<leader\>wk"<CR>
+nnoremap <C-w><C-j> :echoe "Use \<leader\>wj"<CR>
+
+" no longer need 
 " only allow vim motions
-nnoremap <Left>  :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up>    :echoe "Use k"<CR>
-nnoremap <Down>  :echoe "Use j"<CR>
+" nnoremap <Left>  :echoe Use h<CR>
+" nnoremap <Right> :echoe Use l<CR>
+" nnoremap <Up>    :echoe Use k<CR>
+" nnoremap <Down>  :echoe Use j<CR>
 " ...and in insert mode
-inoremap <Left>  <ESC>:echoe "Use h"<CR>
-inoremap <Right> <ESC>:echoe "Use l"<CR>
-inoremap <Up>    <ESC>:echoe "Use k"<CR>
-inoremap <Down>  <ESC>:echoe "Use j"<CR>
+" inoremap <Left>  <ESC>:echoe Use h<CR>
+" inoremap <Right> <ESC>:echoe Use l<CR>
+" inoremap <Up>    <ESC>:echoe Use k<CR>
+" inoremap <Down>  <ESC>:echoe Use j<CR>
 " }}}
 
 " Generic Configuration ----------------------------------------------------------- {{{
+" NAV: nav-config
 " line number 
 set number relativenumber numberwidth=8
 
@@ -228,50 +292,71 @@ set laststatus=2
 " Unbind some useless/annoying default key bindings.
 nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
 
+" word wrap without line breaks
+set wrap linebreak nolist textwidth=0
+
 " Get rid of color column
 set colorcolumn=0
 
+" utf-8 byte sequence
+set encoding=UTF-8
+
+" Some servers have issues with backup files (coc issue #649)
+set nobackup
+set nowritebackup
+
+" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
+" delays and poor user experience
+set updatetime=300
 " }}}
 
+" set highlight search
+set hlsearch
+
+
 " Highlight Config ----------------------------------------------------------- {{{
-hi CursorLineNr cterm=Bold ctermbg=8 ctermfg=4
+" NAV: nav-highlight
+highlight CursorLineNr cterm=Bold ctermbg=8 ctermfg=4
 
 " Change highlight groups
-hi Todo ctermbg=NONE cterm=Bold ctermfg=11
-hi Error ctermbg=NONE cterm=Bold ctermfg=9 ctermbg=NONE
-hi ErrorMsg ctermbg=NONE
+highlight Todo ctermbg=NONE cterm=Bold ctermfg=11
+highlight Error ctermbg=NONE cterm=Bold ctermfg=9 ctermbg=NONE
+highlight ErrorMsg ctermbg=NONE
 
 " Change parenthesis matching
-hi MatchParen ctermbg=NONE cterm=Underline ctermfg=4
+highlight MatchParen ctermbg=NONE cterm=Underline ctermfg=4
 
 " Change normal font color
-hi Normal ctermfg=7
+highlight Normal ctermfg=7
+
+highlight Search ctermbg=13 ctermfg=15
+highlight CurSearch cterm=bold ctermbg=11 ctermfg=0
 
 " Highlight cursor line underneath the cursor vertically.
-hi CursorLine cterm=NONE ctermbg=8 
+highlight CursorLine cterm=NONE ctermbg=8 
 " To edit the cursor color, do it in shell settings
 
-hi VertSplit cterm=bold ctermbg=NONE ctermfg=NONE
-hi HoriSplit cterm=bold ctermbg=NONE ctermfg=NONE
+highlight VertSplit cterm=bold ctermbg=NONE ctermfg=NONE
+highlight HoriSplit cterm=bold ctermbg=NONE ctermfg=NONE
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved
-hi SignColumn ctermbg=NONE
-hi LineNr ctermbg=NONE
+highlight SignColumn ctermbg=NONE
+highlight LineNr ctermbg=NONE
 
 " Change highlight color of visual mode
-hi Visual cterm=NONE ctermbg=0
+highlight Visual cterm=NONE ctermbg=0
 
 " Change highlighting of QuickFixLine popup
-hi QuickFixLine ctermbg=NONE
+highlight QuickFixLine ctermbg=NONE
 
 " Adjust highlighting for Folded tabs
-hi Folded ctermfg=5 ctermbg=NONE 
+highlight Folded ctermfg=5 ctermbg=NONE 
 
 " WildMenu Highlights
-hi WildMenu ctermbg=7 cterm=bold ctermfg=6 guibg=NONE
-hi StatusLineNC ctermbg=7 ctermfg=8
-hi StatusLine ctermbg=7 ctermfg=8
+highlight WildMenu ctermbg=7 cterm=bold ctermfg=6 guibg=NONE
+highlight StatusLineNC ctermbg=7 ctermfg=8
+highlight StatusLine ctermbg=7 ctermfg=8
 
 " }}}
  
@@ -280,16 +365,49 @@ hi StatusLine ctermbg=7 ctermfg=8
 " }}}
 
 " AutoCommands ----------------------------------------------------------- {{{
-" NOTE: some of these may overwrite generic settings defined above
-autocmd BufRead,BufNewFile $MYVIMRC set foldmethod=marker
+" NAV: nav-auto
 
-" templ-group 
+" NOTE: some of these may overwrite generic settings defined above
+augroup foldconfig
+	autocmd!
+	autocmd BufRead,BufNewFile * setlocal foldmethod=syntax
+augroup end
+
+augroup vimrc
+	autocmd!
+	autocmd BufRead,BufNewFile $MYVIMRC setlocal foldmethod=marker
+augroup end
+
+
+" *.tex
+augroup texgroup
+	autocmd!
+	" abbreviations for faster latex
+ 	autocmd FileType plaintex :iabbrev <buffer> mk $$<esc>i<c-r>=Eatchar('\s')<cr>
+ 	autocmd FileType plaintex :iabbrev <buffer> dm $$$$<left><esc>i<c-r>=Eatchar('\s')<cr>
+ 	autocmd FileType plaintex :iabbrev <buffer> sl \<esc>a<c-r>=Eatchar('\s')<cr>
+	" abbreviations for environments and lists 
+ 	autocmd FileType plaintex :iabbrev <buffer> align \begin{align*}\end{align*}<left><left><left><left><left><left><left><left><left><left><left><left><NL><NL><esc><up>i<c-r>=Eatchar('\s')<cr>
+ 	autocmd FileType plaintex :iabbrev <buffer> enum \begin{enumerate}\end{enumerate}<left><left><left><left><left><left><left><left><left><left><left><left><NL><NL><esc><up>i<c-r>=Eatchar('\s')<cr>
+ 	autocmd FileType plaintex :iabbrev <buffer> itemize \begin{itemize}\end{itemize}<left><left><left><left><left><left><left><left><left><left><left><left><NL><NL><esc><up>i<c-r>=Eatchar('\s')<cr>
+	" latex configuration
+	autocmd FileType plaintex set linebreak breakat=100 textwidth=100
+augroup end
+ 
+
+" *.py
+augroup pythongroup
+	autocmd!
+	autocmd FileType python :iabbrev <buffer> iff if:<esc>i
+augroup end
+
+" *.templ files
 augroup templgroup
-	au BufRead,BufNewFile *.templ setfiletype go
-  	au BufRead,BufNewFile *.templ syntax match TemplTag "^templ"
-  	au BufRead,BufNewFile *.templ hi link TemplTag Keyword
+	autocmd!
+	autocmd BufRead,BufNewFile *.templ setfiletype go
+  	autocmd BufRead,BufNewFile *.templ syntax match TemplTag "^templ"
+  	autocmd BufRead,BufNewFile *.templ highlight link TemplTag Keyword
 	" Additional HTML like matching
-  	au BufRead,BufNewFile *.templ hi link TemplTag Keyword
 augroup end
 
 autocmd FileType templ CocAction('diagnosticToggle')
@@ -297,6 +415,7 @@ autocmd FileType templ CocAction('diagnosticToggle')
 " }}}
 
 " MOUSE SETTINGS -------------------------- {{{
+" NAV: nav-mouse
 set mouse=a
 noremap <C-ScrollWheelUp> <nop>
 noremap <C-ScrollWheelDown> <nop>
@@ -329,7 +448,7 @@ noremap! <S-ScrollWheelRight> <nop>
 noremap! <ScrollWheelUp> <nop>
 noremap! <ScrollWheelDown> <nop>
 noremap! <ScrollWheelLeft> <nop>
-noremap! <ScrollWheelRight> <nop>
+noremap! <ScrollWheelRight> <nop
 noremap! <LeftMouse> <nop>
 noremap! <RightMouse> <nop>
 noremap! <2-LeftMouse> <nop>
@@ -341,6 +460,7 @@ noremap! <4-LeftMouse> <nop>
 " }}}
 
 " vim-airline Setting -------------------------- {{{
+" NAV: nav-airline
 let g:airline_theme='selenized'
 let g:airline_powerline_fonts = 1
 
@@ -368,45 +488,18 @@ let g:airline_right_alt_sep = ''
 " }}}
 
 " GoConfig ----------------------------- {{{
+" NAV: nav-goconfig
 let g:go_def_mode='gopls'
 let g:go_info_mode='gopls'
+" disables keyword lookup; need this since K is already binded to 25k
+let g:go_doc_keywordprg_enabled = 0
 "}}}
 
 " CocConfig ----------------------------- {{{
 " https://raw.githubusercontent.com/neoclide/coc.nvim/master/doc/coc-example-config.vim
+" NAV: nav-cocconfig
 
-" May need for Vim (not Neovim) since coc.nvim calculates byte offset by count
-" utf-8 byte sequence
-set encoding=UTF-8
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
-
-" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
-" delays and poor user experience
-set updatetime=300
-
-" Use tab for trigger completion with characters ahead and navigate
-" NOTE: There's always complete item selected by default, you may want to enable
-" no select by `"suggest.noselect": true` in your configuration file
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config
-
-" Coc Setup ----------------------------- {{{
-" https://raw.githubusercontent.com/neoclide/coc.nvim/master/doc/coc-example-config.vim
-
-" May need for Vim (not Neovim) since coc.nvim calculates byte offset by count
-" utf-8 byte sequence
-set encoding=UTF-8
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
-
-" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
-" delays and poor user experience
-set updatetime=300
-
-" Tab Completion
+" FEATURE: Tab Completion
 " Use tab for trigger completion with characters ahead and navigate
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1) :
@@ -448,7 +541,7 @@ endfunction
 
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
-hi CocHighlightText cterm=Bold ctermfg=12 ctermbg=None
+highlight CocHighlightText cterm=Bold ctermfg=12 ctermbg=None
 
 " Symbol renaming
 nnoremap <leader>rn <Plug>(coc-rename)
@@ -461,8 +554,6 @@ augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s)
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
 " Applying code actions to the selected code block
