@@ -1,2 +1,3 @@
 copy:
-	cp ~/.vimrc ./.vimrc
+	echo "copying ~/.vimrc"
+	@cp ~/.vimrc ./.vimrc
