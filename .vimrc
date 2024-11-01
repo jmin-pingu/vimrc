@@ -9,11 +9,12 @@ Plug 'tpope/vim-commentary'
 Plug 'bryanmylee/vim-colorscheme-icons'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'https://github.com/ap/vim-css-color'
 Plug 'https://github.com/romainl/vim-cool'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+" Go Plugins
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 
 " Status Line
 Plug 'vim-airline/vim-airline'
@@ -25,9 +26,17 @@ Plug 'rafi/awesome-vim-colorschemes'
 call plug#end()
 " }}}
 
+" NAV: nav-filetypes
+au BufNewFile,BufRead *.tutor set filetype=tutor
+au BufNewFile,BufRead *.templ set filetype=templ
+
 " set color scheme
 " NAV: nav-colorscheme
 colorscheme twilight256
+" favorites
+" twilight256
+" default
+" habamax
 
 " Map the leader key
 " NAV: nav-leader
@@ -46,13 +55,27 @@ func Eatchar(pat)
 endfunc 
 "}}}
 
+" TODO: add a description fo  this function
+function! InsertIfEmpty(template_fn)
+    if @% == ""
+        " No filename for current buffer
+		call a:template_fn()
+    elseif filereadable(@%) == 0
+        " File doesn't exist yet
+		call a:template_fn()
+    elseif line('$') == 1 && col('$') == 1
+        " File is empty
+        call a:template_fn()
+    endif
+endfunction
+
 " Macros: Mappings and Abbreviations ----------------------------------------------------------- {{{
 " NAV: nav-map
 
 " NORMAL MODE MACROS: Use <leader> 				
 " NAV: nav-map-normal 
 
-" save fil 
+" save file
 nnoremap <leader>sf :w<CR>
 
 " Quick edit of $MYVIMRC
@@ -70,7 +93,7 @@ nnoremap <leader>cl <esc>V"*y
 nnoremap <leader>cp <esc>vip"*y
 
 nnoremap <leader>v <esc>"*p
- 
+
 " Mappings for window nav
 nnoremap <leader>wl <C-w>l
 nnoremap <leader>wj <C-w>j
@@ -87,7 +110,7 @@ nnoremap L $
 " Big scroll up and scroll down
 nnoremap J 20j
 nnoremap K 20k
- 
+
 " Toggle Folds 
 nnoremap <leader><F1> za
 
@@ -143,11 +166,19 @@ inoremap <C-d> <esc>ddi
 " paste
 inoremap <c-v> <esc>"*pi
 
+iabbrev (( ()<esc>i<c-r>=Eatchar('\s')<cr>
+iabbrev [[ []<esc>i<c-r>=Eatchar('\s')<cr>
+iabbrev {{ {}<esc>i<c-r>=Eatchar('\s')<cr>
+iabbrev << <><esc>i<c-r>=Eatchar('\s')<cr>
+
 " VISUAL MODE MACROS: Do not use <leader>
 " NAV: nav-map-visual
 vnoremap <leader>x "*y<esc>v`>d
 " copy selected text 
 vnoremap <leader>cc "*y
+
+" indent selected lines
+vnoremap <leader>id =<esc>
 
 " Surround selected text with character
 vnoremap "" <esc>`>a"<esc>`<i"<esc>b
@@ -249,7 +280,7 @@ set tabstop=4
 
 " Set indentation to be automatic 
 set autoindent
- 
+
 " set cursorline as true
 set cursorline
 
@@ -324,13 +355,11 @@ highlight Error ctermbg=NONE cterm=Bold ctermfg=9 ctermbg=NONE
 highlight ErrorMsg ctermbg=NONE
 
 " Change parenthesis matching
-highlight MatchParen ctermbg=NONE cterm=Underline ctermfg=4
+highlight MatchParen ctermbg=NONE cterm=Bold,Underline ctermfg=4
 
 " Change normal font color
-highlight Normal ctermfg=7
+highlight Normal ctermfg=7 ctermbg=NONE
 
-highlight Search ctermbg=13 ctermfg=15
-highlight CurSearch cterm=bold ctermbg=11 ctermfg=0
 
 " Highlight cursor line underneath the cursor vertically.
 highlight CursorLine cterm=NONE ctermbg=8 
@@ -344,9 +373,6 @@ highlight HoriSplit cterm=bold ctermbg=NONE ctermfg=NONE
 highlight SignColumn ctermbg=NONE
 highlight LineNr ctermbg=NONE
 
-" Change highlight color of visual mode
-highlight Visual cterm=NONE ctermbg=0
-
 " Change highlighting of QuickFixLine popup
 highlight QuickFixLine ctermbg=NONE
 
@@ -358,8 +384,12 @@ highlight WildMenu ctermbg=7 cterm=bold ctermfg=6 guibg=NONE
 highlight StatusLineNC ctermbg=7 ctermfg=8
 highlight StatusLine ctermbg=7 ctermfg=8
 
+" ModeMsg 
+highlight ModeMsg ctermbg=NONE ctermfg=7
+
+
 " }}}
- 
+
 " Custom Highlight Groups ----------------------------------------------------------- {{{
 
 " }}}
@@ -367,50 +397,121 @@ highlight StatusLine ctermbg=7 ctermfg=8
 " AutoCommands ----------------------------------------------------------- {{{
 " NAV: nav-auto
 
+
+" NOTE: colorschemes
+" TODO: need to actually apply these to the original colorscheme file
+" NAV: nav-augroup-twilight256
+augroup twilight256_config
+	autocmd!
+	autocmd ColorScheme twilight256 highlight Normal ctermbg=NONE
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight Visual cterm=NONE ctermbg=0
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight Search ctermbg=13 ctermfg=15
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight CurSearch cterm=bold ctermbg=11 ctermfg=0
+augroup end
+
+" NAV: nav-augroup-habamax
+augroup habamax_config
+	autocmd!
+	autocmd ColorSchemePre,ColorScheme habamax highlight Visual ctermfg=15 ctermbg=8
+	autocmd ColorSchemePre,ColorScheme habamax highlight Search ctermbg=15 ctermfg=8
+	autocmd ColorSchemePre,ColorScheme habamax highlight CurSearch cterm=bold ctermbg=4 ctermfg=8
+augroup end
+
 " NOTE: some of these may overwrite generic settings defined above
 augroup foldconfig
 	autocmd!
 	autocmd BufRead,BufNewFile * setlocal foldmethod=syntax
 augroup end
 
+" NAV: nav-augroup-vimrc
 augroup vimrc
 	autocmd!
 	autocmd BufRead,BufNewFile $MYVIMRC setlocal foldmethod=marker
 augroup end
 
+" *.html
+" NAV: nav-augroup-html
+function! NewHTMLElem()
+	let elem = input('elem: ')
+	execute "normal! i<".elem.">\n\n</".elem.">\e2k$"
+	call feedkeys('i')
+endfunction
+
+augroup htmlgroup
+	autocmd!
+	autocmd FileType html nnoremap <leader>ne :call NewHTMLElem()<CR>
+	autocmd FileType html inoremap <leader>ne <esc>:call NewHTMLElem()<CR>
+augroup end
 
 " *.tex
+" NAV: nav-augroup-latex
+function! NewEnvironment()
+	let env = input('env: ')
+	execute "normal! i\\begin{".env."}\n\n\\end{".env."}\ek$"
+	execute "normal! kV2j=\ej"
+	call feedkeys('i')
+endfunction
+
 augroup texgroup
 	autocmd!
 	" abbreviations for faster latex
- 	autocmd FileType plaintex :iabbrev <buffer> mk $$<esc>i<c-r>=Eatchar('\s')<cr>
- 	autocmd FileType plaintex :iabbrev <buffer> dm $$$$<left><esc>i<c-r>=Eatchar('\s')<cr>
- 	autocmd FileType plaintex :iabbrev <buffer> sl \<esc>a<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex :iabbrev <buffer> mk $$<esc>i<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex :iabbrev <buffer> dm $$$$<left><esc>i<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex :iabbrev <buffer> sl \<esc>a<c-r>=Eatchar('\s')<cr>
+
 	" abbreviations for environments and lists 
- 	autocmd FileType plaintex :iabbrev <buffer> align \begin{align*}\end{align*}<left><left><left><left><left><left><left><left><left><left><left><left><NL><NL><esc><up>i<c-r>=Eatchar('\s')<cr>
- 	autocmd FileType plaintex :iabbrev <buffer> enum \begin{enumerate}\end{enumerate}<left><left><left><left><left><left><left><left><left><left><left><left><NL><NL><esc><up>i<c-r>=Eatchar('\s')<cr>
- 	autocmd FileType plaintex :iabbrev <buffer> itemize \begin{itemize}\end{itemize}<left><left><left><left><left><left><left><left><left><left><left><left><NL><NL><esc><up>i<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex :iabbrev <buffer> enum \begin{enumerate}\end{enumerate}<left><left><left><left><left><left><left><left><left><left><left><left><NL><NL><esc><up>i<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex :iabbrev <buffer> itemize \begin{itemize}\end{itemize}<left><left><left><left><left><left><left><left><left><left><left><left><NL><NL><esc><up>i<c-r>=Eatchar('\s')<cr>
+
 	" latex configuration
 	autocmd FileType plaintex set linebreak breakat=100 textwidth=100
+
+	" latex unique commands
+	autocmd FileType plaintex nnoremap <leader>ne :call NewEnvironment()<CR>
+	autocmd FileType plaintex inoremap <leader>ne <esc>:call NewEnvironment()<CR>
 augroup end
- 
+
+" *.json
+" NAV: nav-augroup-json
+function! JsonTemplate()
+	execute "normal! i{\n\n\b}\ek"
+endfunction	
+
+function! NewEntryJSON()
+	let key = input('k: ')
+	let val = input('v: ')
+	execute "normal! i\"".key."\": ".val.",\n"
+endfunction
+
+augroup jsongroup
+	autocmd!
+	autocmd VimEnter,BufNewFile *.json call InsertIfEmpty(function('JsonTemplate'))
+	autocmd FileType json nnoremap <leader>ne :call NewEntryJSON()<CR>
+	autocmd FileType json inoremap <leader>ne <esc>:call NewEntryJSON()<CR>
+augroup end
 
 " *.py
+" NAV: nav-augroup-python
 augroup pythongroup
 	autocmd!
 	autocmd FileType python :iabbrev <buffer> iff if:<esc>i
 augroup end
 
 " *.templ files
-augroup templgroup
-	autocmd!
-	autocmd BufRead,BufNewFile *.templ setfiletype go
-  	autocmd BufRead,BufNewFile *.templ syntax match TemplTag "^templ"
-  	autocmd BufRead,BufNewFile *.templ highlight link TemplTag Keyword
-	" Additional HTML like matching
-augroup end
+" NAV: nav-augroup-templ
+" augroup templgroup
+" 	" Additional HTML like matching
+" 	autocmd!
+" 	autocmd BufRead,BufNewFile,BufWritePost *.templ setfiletype go
+" 	autocmd BufRead,BufNewFile *.templ highlight link TemplTag Keyword
+" 	autocmd BufRead,BufNewFile *.templ syntax match TemplTag "^templ"
+" 	autocmd BufRead,BufNewFile *.templ nnoremap <buffer> <leader>ne :call NewHTMLElem()<CR>
+" 	autocmd BufRead,BufNewFile *.templ inoremap <buffer> <leader>ne <esc>:call NewHTMLElem()<CR>
+" 	autocmd BufRead,BufNewFile *.templ let g:go_fmt_autosave = 0
+" 	autocmd BufRead,BufNewFile *.templ syntax region HTMLBlock start="\\ STRT" end="\\ END" contains=html
+" augroup end
 
-autocmd FileType templ CocAction('diagnosticToggle')
+" autocmd FileType templ CocAction('diagnosticToggle')
 
 " }}}
 
@@ -476,7 +577,7 @@ let g:airline#extensions#whitespace#enabled = 0
 let g:airline_statusline_ontop = 0
 " Powerline symbols
 if !exists('g:airline_symbols') 
-  let g:airline_symbols = {} 
+	let g:airline_symbols = {} 
 endif 
 let g:airline_symbols.linenr = ' LN:' 
 let g:airline_symbols.colnr = ' CN:' 
@@ -502,19 +603,19 @@ let g:go_doc_keywordprg_enabled = 0
 " FEATURE: Tab Completion
 " Use tab for trigger completion with characters ahead and navigate
 inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackspace() ? "\<Tab>" :
-      \ coc#refresh()
+			\ coc#pum#visible() ? coc#pum#next(1) :
+			\ CheckBackspace() ? "\<Tab>" :
+			\ coc#refresh()
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
 " Make <CR> to accept selected completion item or notify coc.nvim to format
 " <C-g>u breaks current undo, please make your own choice
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
+	let col = col('.') - 1
+	return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 " Use `[g` and `]g` to navigate diagnostics
@@ -532,11 +633,11 @@ nnoremap <leader> gr <Plug>(coc-references)
 nnoremap <leader>doc :call ShowDocumentation()<CR>
 
 function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
+	if CocAction('hasProvider', 'hover')
+		call CocActionAsync('doHover')
+	else
+		call feedkeys('K', 'in')
+	endif
 endfunction
 
 " Highlight the symbol and its references when holding the cursor
@@ -551,9 +652,9 @@ xnoremap <leader>f  <Plug>(coc-format-selected)
 nnoremap <leader>f  <Plug>(coc-format-selected)
 
 augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s)
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+	autocmd!
+	" Setup formatexpr specified filetype(s)
+	autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
 augroup end
 
 " Applying code actions to the selected code block
@@ -586,12 +687,12 @@ onoremap ac <Plug>(coc-classobj-a)
 
 " Remap <C-f> and <C-b> to scroll float windows/popups
 if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+	nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+	nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+	nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+	nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+	vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+	vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
 
 " Use CTRL-S for selections ranges
