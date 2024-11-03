@@ -352,7 +352,7 @@ highlight CursorLineNr cterm=Bold ctermbg=8 ctermfg=4
 " Change highlight groups
 highlight Todo ctermbg=NONE cterm=Bold ctermfg=11
 highlight Error ctermbg=NONE cterm=Bold ctermfg=9 ctermbg=NONE
-highlight ErrorMsg ctermbg=NONE
+highlight ErrorMsg ctermfg=0
 
 " Change parenthesis matching
 highlight MatchParen ctermbg=NONE cterm=Bold,Underline ctermfg=4
@@ -387,6 +387,11 @@ highlight StatusLine ctermbg=7 ctermfg=8
 " ModeMsg 
 highlight ModeMsg ctermbg=NONE ctermfg=7
 
+" Visual mode settings
+highlight Visual cterm=NONE ctermbg=0
+" Search settings
+highlight Search ctermbg=13 ctermfg=15
+highlight CurSearch cterm=bold ctermbg=11 ctermfg=0
 
 " }}}
 
@@ -459,10 +464,6 @@ augroup texgroup
 	autocmd FileType plaintex :iabbrev <buffer> dm $$$$<left><esc>i<c-r>=Eatchar('\s')<cr>
 	autocmd FileType plaintex :iabbrev <buffer> sl \<esc>a<c-r>=Eatchar('\s')<cr>
 
-	" abbreviations for environments and lists 
-	autocmd FileType plaintex :iabbrev <buffer> enum \begin{enumerate}\end{enumerate}<left><left><left><left><left><left><left><left><left><left><left><left><NL><NL><esc><up>i<c-r>=Eatchar('\s')<cr>
-	autocmd FileType plaintex :iabbrev <buffer> itemize \begin{itemize}\end{itemize}<left><left><left><left><left><left><left><left><left><left><left><left><NL><NL><esc><up>i<c-r>=Eatchar('\s')<cr>
-
 	" latex configuration
 	autocmd FileType plaintex set linebreak breakat=100 textwidth=100
 
@@ -485,7 +486,7 @@ endfunction
 
 augroup jsongroup
 	autocmd!
-	autocmd VimEnter,BufNewFile *.json call InsertIfEmpty(function('JsonTemplate'))
+	autocmd BufNewFile *.json call InsertIfEmpty(function('JsonTemplate'))
 	autocmd FileType json nnoremap <leader>ne :call NewEntryJSON()<CR>
 	autocmd FileType json inoremap <leader>ne <esc>:call NewEntryJSON()<CR>
 augroup end
@@ -495,6 +496,10 @@ augroup end
 augroup pythongroup
 	autocmd!
 	autocmd FileType python :iabbrev <buffer> iff if:<esc>i
+augroup end
+
+augroup mdgroup
+	autocmd FileType markdown set linebreak breakat=100 textwidth=100
 augroup end
 
 " *.templ files
