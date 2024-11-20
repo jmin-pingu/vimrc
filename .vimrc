@@ -42,6 +42,17 @@ colorscheme twilight256
 " NAV: nav-leader
 let g:mapleader=" "
 
+"LEARNING: ------ {{{
+
+function DisplayName(...)
+	echom a:0
+	echom a:1
+	" this returns an array
+	echom a:000 
+endfunction
+
+" NOTE: always need to prefix with a: for locally scoped func args
+"}}}
 
 " Functions: fuctions to help with maps, abbreviations, and all things config ----------------------------------------------------------- {{{
 " NAV: nav-func
@@ -49,10 +60,10 @@ let g:mapleader=" "
 " A useful function for eating a character
 " TODO: actually understand what the fuck this function does cause I just C-c
 " C-v'ed it from 
-func Eatchar(pat)
+function Eatchar(pat)
 	let c = nr2char(getchar(0))
 	return (c =~ a:pat) ? '' : c
-endfunc 
+endfunction
 "}}}
 
 " TODO: add a description fo  this function
@@ -93,6 +104,21 @@ nnoremap <leader>cl <esc>V"*y
 nnoremap <leader>cp <esc>vip"*y
 
 nnoremap <leader>v <esc>"*p
+
+function ChangeDim()
+	let axis = input("H or V: ")
+	let amount = input("amount: ")
+	if axis ==? "v"
+		execute "vertical resize " . amount 
+	elseif axis ==? "h"
+		execute "horizontal resize " . amount 
+	else 
+	 	echom "incorrect dimensions for ChangeDim()"
+	endif
+endfunction
+
+" Mappings for window resizing
+nnoremap <leader>rw :call ChangeDim()<CR>
 
 " Mappings for window nav
 nnoremap <leader>wl <C-w>l
@@ -144,6 +170,13 @@ nnoremap <leader>bn :bn<CR>
 " jump to prev buffer
 nnoremap <leader>bp :bp<CR>
 
+" Mappings for moving buffers
+nnoremap <leader>bsh :execute "leftabove vsplit " . bufname("#")<CR>
+nnoremap <leader>bsl :execute "rightbelow vsplit " . bufname("#")<CR>
+nnoremap <leader>bsk :execute "belowright split " . bufname("#")<CR>
+nnoremap <leader>bsj :execute "aboveleft split " . bufname("#")<CR>
+
+
 " INSERT MODE MACROS: Do not use <leader>
 " NAV: nav-map-insert
 
@@ -166,6 +199,11 @@ inoremap <C-d> <esc>ddi
 " paste
 inoremap <c-v> <esc>"*pi
 
+" Mappings for quick comments like and other things 
+iabbrev td TODO: <esc><Plug>CommentaryLine<esc>A<c-r>=Eatchar('\s')<cr>
+iabbrev nt NOTE: <esc><Plug>CommentaryLine<esc>A<c-r>=Eatchar('\s')<cr>
+
+" Mappings for quick bounds
 iabbrev (( ()<esc>i<c-r>=Eatchar('\s')<cr>
 iabbrev [[ []<esc>i<c-r>=Eatchar('\s')<cr>
 iabbrev {{ {}<esc>i<c-r>=Eatchar('\s')<cr>
@@ -222,6 +260,7 @@ onoremap in" :<c-u>normal! f"vi"<cr>
 onoremap in' :<c-u>normal! f'vi'<cr>
 onoremap in` :<c-u>normal! f`vi`<cr>
 
+
 " }}}
 
 " Training Wheels ----------------------------------------------------------- {{{
@@ -243,21 +282,23 @@ nnoremap <C-w><C-l> :echoe "Use \<leader\>wl"<CR>
 nnoremap <C-w><C-k> :echoe "Use \<leader\>wk"<CR>
 nnoremap <C-w><C-j> :echoe "Use \<leader\>wj"<CR>
 
-" no longer need 
 " only allow vim motions
-" nnoremap <Left>  :echoe Use h<CR>
-" nnoremap <Right> :echoe Use l<CR>
-" nnoremap <Up>    :echoe Use k<CR>
-" nnoremap <Down>  :echoe Use j<CR>
+" TODO: need to update motions that use <Left>, <Right>, <Up>, <Down>
+nnoremap <Left>  :echoe Use h<CR>
+nnoremap <Right> :echoe Use l<CR>
+nnoremap <Up>    :echoe Use k<CR>
+nnoremap <Down>  :echoe Use j<CR>
 " ...and in insert mode
-" inoremap <Left>  <ESC>:echoe Use h<CR>
-" inoremap <Right> <ESC>:echoe Use l<CR>
-" inoremap <Up>    <ESC>:echoe Use k<CR>
-" inoremap <Down>  <ESC>:echoe Use j<CR>
+inoremap <Left>  <ESC>:echoe Use h<CR>
+inoremap <Right> <ESC>:echoe Use l<CR>
+inoremap <Up>    <ESC>:echoe Use k<CR>
+inoremap <Down>  <ESC>:echoe Use j<CR>
+
 " }}}
 
 " Generic Configuration ----------------------------------------------------------- {{{
 " NAV: nav-config
+" TODO: does it make sense to cover all generic configuration in an augroup?
 " line number 
 set number relativenumber numberwidth=8
 
@@ -402,6 +443,9 @@ highlight CurSearch cterm=bold ctermbg=11 ctermfg=0
 " AutoCommands ----------------------------------------------------------- {{{
 " NAV: nav-auto
 
+" NOTE: debating on moving some functionality to ~/.vim/after/ftplugin/<filetype>.vim
+" TODO: create a function for specific filetypes so that I can have a split screen or checklist of lines where bugs are
+" TODO: find a way to rerun autogroups upon sourcing ~/.vimrc
 
 " NOTE: colorschemes
 " TODO: need to actually apply these to the original colorscheme file
@@ -444,8 +488,8 @@ endfunction
 
 augroup htmlgroup
 	autocmd!
-	autocmd FileType html nnoremap <leader>ne :call NewHTMLElem()<CR>
-	autocmd FileType html inoremap <leader>ne <esc>:call NewHTMLElem()<CR>
+	autocmd FileType templ,html nnoremap <leader>ne :call NewHTMLElem()<CR>
+	autocmd FileType templ,html inoremap <leader>ne <esc>:call NewHTMLElem()<CR>
 augroup end
 
 " *.tex
@@ -460,17 +504,50 @@ endfunction
 augroup texgroup
 	autocmd!
 	" abbreviations for faster latex
-	autocmd FileType plaintex :iabbrev <buffer> mk $$<esc>i<c-r>=Eatchar('\s')<cr>
-	autocmd FileType plaintex :iabbrev <buffer> dm $$$$<left><esc>i<c-r>=Eatchar('\s')<cr>
-	autocmd FileType plaintex :iabbrev <buffer> sl \<esc>a<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex,tex :iabbrev <buffer> mk $$<esc>i<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex,tex :iabbrev <buffer> mca \mathcal{}<esc>i<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex,tex :iabbrev <buffer> mbb \mathbb{}<esc>i<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex,tex :iabbrev <buffer> mbf \mathbf{}<esc>i<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex,tex :iabbrev <buffer> dm $$$$<left><esc>i<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex,tex :iabbrev <buffer> sl \<esc>a<c-r>=Eatchar('\s')<cr>
+	autocmd FileType plaintex,tex :iabbrev <buffer> @a \alpha
+	autocmd FileType plaintex,tex :iabbrev <buffer> @A \Alpha
+	autocmd FileType plaintex,tex :iabbrev <buffer> @b \beta
+	autocmd FileType plaintex,tex :iabbrev <buffer> @B \Beta
+	autocmd FileType plaintex,tex :iabbrev <buffer> @c \chi
+	autocmd FileType plaintex,tex :iabbrev <buffer> @C \Chi
+	autocmd FileType plaintex,tex :iabbrev <buffer> @g \gamma
+	autocmd FileType plaintex,tex :iabbrev <buffer> @G \Gamma
+	autocmd FileType plaintex,tex :iabbrev <buffer> @d \delta
+	autocmd FileType plaintex,tex :iabbrev <buffer> @D \Delta
+	autocmd FileType plaintex,tex :iabbrev <buffer> @e \epsilon
+	autocmd FileType plaintex,tex :iabbrev <buffer> @E \Epsilon
+	autocmd FileType plaintex,tex :iabbrev <buffer> @z \zeta
+	autocmd FileType plaintex,tex :iabbrev <buffer> @Z \Zeta
+	autocmd FileType plaintex,tex :iabbrev <buffer> @t \theta
+	autocmd FileType plaintex,tex :iabbrev <buffer> @T \Theta
+	autocmd FileType plaintex,tex :iabbrev <buffer> @k \kappa
+	autocmd FileType plaintex,tex :iabbrev <buffer> @K \Kappa
+	autocmd FileType plaintex,tex :iabbrev <buffer> @l \lambda
+	autocmd FileType plaintex,tex :iabbrev <buffer> @L \Lambda
+	autocmd FileType plaintex,tex :iabbrev <buffer> @m \mu
+	autocmd FileType plaintex,tex :iabbrev <buffer> @M \Mu
+	autocmd FileType plaintex,tex :iabbrev <buffer> @r \rho
+	autocmd FileType plaintex,tex :iabbrev <buffer> @R \Rho
+	autocmd FileType plaintex,tex :iabbrev <buffer> @o \omega
+	autocmd FileType plaintex,tex :iabbrev <buffer> @O \Omeg
+	autocmd FileType plaintex,tex :iabbrev <buffer> @u \upsilon
+	autocmd FileType plaintex,tex :iabbrev <buffer> @U \Upsilon
 
 	" latex configuration
-	autocmd FileType plaintex set linebreak breakat=100 textwidth=100
+	autocmd SourcePost,FileType plaintex,tex set linebreak textwidth=100
 
-	" latex unique commands
-	autocmd FileType plaintex nnoremap <leader>ne :call NewEnvironment()<CR>
-	autocmd FileType plaintex inoremap <leader>ne <esc>:call NewEnvironment()<CR>
+ 	" latex unique commands
+	autocmd FileType plaintex,tex nnoremap <leader>ne :call NewEnvironment()<CR>
+	" compile: 
+	autocmd FileType plaintex,tex nnoremap <leader>ru :execute "!pdflatex " . @%<CR>
 augroup end
+ 
 
 " *.json
 " NAV: nav-augroup-json
@@ -481,7 +558,7 @@ endfunction
 function! NewEntryJSON()
 	let key = input('k: ')
 	let val = input('v: ')
-	execute "normal! i\"".key."\": ".val.",\n"
+	execute "normal! i\"" . key . "\": " . val . ",\n"
 endfunction
 
 augroup jsongroup
@@ -492,14 +569,27 @@ augroup jsongroup
 augroup end
 
 " *.py
+" NOTE: function taken from https://stackoverflow.com/questions/64583892/execute-lines-of-python-script-in-vim
+
+python3 << EOL
+import vim
+def ExecuteSelectedLine(l1, l2):
+    for i in range(l1-1,l2):
+        print(">>" + vim.current.buffer[i])
+        exec(vim.current.buffer[i],globals())
+EOL
+
 " NAV: nav-augroup-python
 augroup pythongroup
 	autocmd!
 	autocmd FileType python :iabbrev <buffer> iff if:<esc>i
+	autocmd FileType python command! -range Run <line1>,<line2> python3 ExecuteSelectedLine(<line1>, <line2>)
+	" ru - run entire script
+	autocmd FileType python nnoremap <leader>ru :execute "!clear"<CR>:execute "!python3 %"<CR>
 augroup end
 
 augroup mdgroup
-	autocmd FileType markdown set linebreak breakat=100 textwidth=100
+	autocmd SourcePost,FileType markdown set linebreak breakat=100 textwidth=100
 augroup end
 
 " *.templ files
@@ -554,7 +644,7 @@ noremap! <S-ScrollWheelRight> <nop>
 noremap! <ScrollWheelUp> <nop>
 noremap! <ScrollWheelDown> <nop>
 noremap! <ScrollWheelLeft> <nop>
-noremap! <ScrollWheelRight> <nop
+noremap! <ScrollWheelRight> <nop>
 noremap! <LeftMouse> <nop>
 noremap! <RightMouse> <nop>
 noremap! <2-LeftMouse> <nop>
