@@ -33,8 +33,8 @@ au BufNewFile,BufRead *.templ set filetype=templ
 " set color scheme
 " NAV: nav-colorscheme
 colorscheme twilight256
-" favorites
 " twilight256
+" favorites
 " default
 " habamax
 
@@ -46,9 +46,6 @@ let g:mapleader=" "
 
 function DisplayName(...)
 	echom a:0
-	echom a:1
-	" this returns an array
-	echom a:000 
 endfunction
 
 " NOTE: always need to prefix with a: for locally scoped func args
@@ -88,6 +85,9 @@ endfunction
 
 " save file
 nnoremap <leader>sf :w<CR>
+
+" open nerdtree
+nnoremap <F7> :NERDTreeToggle<CR>
 
 " Quick edit of $MYVIMRC
 nnoremap <leader>ev :vsplit $MYVIMRC<cr>
@@ -202,12 +202,6 @@ inoremap <c-v> <esc>"*pi
 " Mappings for quick comments like and other things 
 iabbrev td TODO: <esc><Plug>CommentaryLine<esc>A<c-r>=Eatchar('\s')<cr>
 iabbrev nt NOTE: <esc><Plug>CommentaryLine<esc>A<c-r>=Eatchar('\s')<cr>
-
-" Mappings for quick bounds
-iabbrev (( ()<esc>i<c-r>=Eatchar('\s')<cr>
-iabbrev [[ []<esc>i<c-r>=Eatchar('\s')<cr>
-iabbrev {{ {}<esc>i<c-r>=Eatchar('\s')<cr>
-iabbrev << <><esc>i<c-r>=Eatchar('\s')<cr>
 
 " VISUAL MODE MACROS: Do not use <leader>
 " NAV: nav-map-visual
@@ -344,7 +338,8 @@ set showmatch
 
 " Change split barrier to |.
 set fillchars=vert:\│
-set fillchars+=fold:· " for folds
+" for folds
+set fillchars+=fold:· 
 
 " set line space 0
 set linespace=0
@@ -490,6 +485,13 @@ augroup htmlgroup
 	autocmd!
 	autocmd FileType templ,html nnoremap <leader>ne :call NewHTMLElem()<CR>
 	autocmd FileType templ,html inoremap <leader>ne <esc>:call NewHTMLElem()<CR>
+augroup end
+
+" *.zig
+" NAV: nav-augroup-zig
+augroup ziggroup
+	" compile: 
+	autocmd FileType zig nnoremap <leader>ru :execute "!zig build"<CR>
 augroup end
 
 " *.tex
