@@ -1,4 +1,4 @@
-" PLUGINS ---------------------------------------------------------- {{{
+" PLUGINS ---------------------------------------------{{{
 " NAV: nav-plug
 call plug#begin('~/.vim/plugged')
 " Use release branch (recommended)
@@ -30,13 +30,48 @@ call plug#end()
 au BufNewFile,BufRead *.tutor set filetype=tutor
 au BufNewFile,BufRead *.templ set filetype=templ
 
-" set color scheme
 " NAV: nav-colorscheme
-colorscheme twilight256
+" TODO: need to actually apply these to the original colorscheme file
+" NAV: nav-augroup-twilight256
+augroup twilight256_config
+	autocmd!
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight CursorLine ctermbg=0
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight Visual ctermfg=7
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight CursorLineNr ctermbg=8 ctermfg=4
+augroup end
+
+" NAV: nav-augroup-rdark
+augroup rdark_config
+	autocmd!
+	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight CursorLine ctermbg=0
+	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight Visual ctermfg=0 ctermbg=8
+	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight CursorLineNr ctermbg=0 ctermfg=4
+augroup end
+
+
+" NAV: nav-augroup-habamax
+augroup habamax_config
+	autocmd!
+	autocmd ColorSchemePre,ColorScheme habamax highlight CursorLineNr ctermbg=236
+	autocmd ColorSchemePre,ColorScheme habamax highlight CursorLineNr ctermbg=236
+augroup end
+
+" NAV: nav-augroup-nord
+augroup nord_config 
+	autocmd!
+	autocmd ColorSchemePre,ColorScheme nord highlight Visual ctermfg=14
+	autocmd ColorSchemePre,ColorScheme nord highlight Visual ctermfg=14
+	autocmd ColorSchemePre,ColorScheme nord highlight CursorLineNr ctermbg=0 ctermfg=4
+augroup end
+
+" set color scheme
+colorscheme rdark-terminal2
+" favorite color-schemes
+" happy_hacking " note need to adjust highlighting
+" rdark-terminal2 " note need to adjust highlighting
 " twilight256
-" favorites
+" nord " note need to adjust highlight color
 " default
-" habamax
 
 " Map the leader key
 " NAV: nav-leader
@@ -63,7 +98,7 @@ function Eatchar(pat)
 endfunction
 "}}}
 
-" TODO: add a description fo  this function
+" TODO: add a description for this function
 function! InsertIfEmpty(template_fn)
     if @% == ""
         " No filename for current buffer
@@ -377,13 +412,13 @@ set nowritebackup
 set updatetime=300
 " }}}
 
-" set highlight search
+" set  ighlight search
 set hlsearch
 
 
 " Highlight Config ----------------------------------------------------------- {{{
 " NAV: nav-highlight
-highlight CursorLineNr cterm=Bold ctermbg=8 ctermfg=4
+highlight CursorLineNr cterm=Bold 
 
 " Change highlight groups
 highlight Todo ctermbg=NONE cterm=Bold ctermfg=11
@@ -394,11 +429,10 @@ highlight ErrorMsg ctermfg=0
 highlight MatchParen ctermbg=NONE cterm=Bold,Underline ctermfg=4
 
 " Change normal font color
-highlight Normal ctermfg=7 ctermbg=NONE
-
+highlight Normal ctermbg=NONE
 
 " Highlight cursor line underneath the cursor vertically.
-highlight CursorLine cterm=NONE ctermbg=8 
+highlight CursorLine cterm=NONE
 " To edit the cursor color, do it in shell settings
 
 highlight VertSplit cterm=bold ctermbg=NONE ctermfg=NONE
@@ -417,14 +451,14 @@ highlight Folded ctermfg=5 ctermbg=NONE
 
 " WildMenu Highlights
 highlight WildMenu ctermbg=7 cterm=bold ctermfg=6 guibg=NONE
-highlight StatusLineNC ctermbg=7 ctermfg=8
+highlight StatusLineNC ctermbg=7 ctermfg=8 
 highlight StatusLine ctermbg=7 ctermfg=8
 
 " ModeMsg 
 highlight ModeMsg ctermbg=NONE ctermfg=7
 
 " Visual mode settings
-highlight Visual cterm=NONE ctermbg=0
+highlight Visual cterm=NONE
 " Search settings
 highlight Search ctermbg=13 ctermfg=15
 highlight CurSearch cterm=bold ctermbg=11 ctermfg=0
@@ -442,24 +476,6 @@ highlight CurSearch cterm=bold ctermbg=11 ctermfg=0
 " TODO: create a function for specific filetypes so that I can have a split screen or checklist of lines where bugs are
 " TODO: find a way to rerun autogroups upon sourcing ~/.vimrc
 
-" NOTE: colorschemes
-" TODO: need to actually apply these to the original colorscheme file
-" NAV: nav-augroup-twilight256
-augroup twilight256_config
-	autocmd!
-	autocmd ColorScheme twilight256 highlight Normal ctermbg=NONE
-	autocmd ColorSchemePre,ColorScheme twilight256 highlight Visual cterm=NONE ctermbg=0
-	autocmd ColorSchemePre,ColorScheme twilight256 highlight Search ctermbg=13 ctermfg=15
-	autocmd ColorSchemePre,ColorScheme twilight256 highlight CurSearch cterm=bold ctermbg=11 ctermfg=0
-augroup end
-
-" NAV: nav-augroup-habamax
-augroup habamax_config
-	autocmd!
-	autocmd ColorSchemePre,ColorScheme habamax highlight Visual ctermfg=15 ctermbg=8
-	autocmd ColorSchemePre,ColorScheme habamax highlight Search ctermbg=15 ctermfg=8
-	autocmd ColorSchemePre,ColorScheme habamax highlight CurSearch cterm=bold ctermbg=4 ctermfg=8
-augroup end
 
 " NOTE: some of these may overwrite generic settings defined above
 augroup foldconfig
@@ -491,7 +507,16 @@ augroup end
 " NAV: nav-augroup-zig
 augroup ziggroup
 	" compile: 
-	autocmd FileType zig nnoremap <leader>ru :execute "!zig build"<CR>
+	autocmd FileType zig nnoremap <leader>ru :execute "!zig build run"<CR>
+	autocmd FileType zig nnoremap <leader>bu :execute "!zig build"<CR>
+augroup end
+
+" *.rs
+" NAV: nav-augroup-rust
+augroup rustgroup
+	" compile: 
+	autocmd FileType rust nnoremap <leader>ru :execute "!cargo run"<CR>
+	autocmd FileType rust nnoremap <leader>bu :execute "!cargo build"<CR>
 augroup end
 
 " *.tex
