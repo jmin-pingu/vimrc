@@ -7,6 +7,7 @@ Plug 'preservim/nerdtree'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-commentary'
 Plug 'bryanmylee/vim-colorscheme-icons'
+Plug 'jaredgorski/Mies.vim'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'https://github.com/ap/vim-css-color'
@@ -33,39 +34,98 @@ au BufNewFile,BufRead *.templ set filetype=templ
 " NAV: nav-colorscheme
 " TODO: need to actually apply these to the original colorscheme file
 " NAV: nav-augroup-twilight256
+let Foreground = "#D6D6D6"
+let Background = "#000000"
+let CursorColor = '#4D5368'
+
 augroup twilight256_config
 	autocmd!
+	" Generic highlight settings
 	autocmd ColorSchemePre,ColorScheme twilight256 highlight CursorLine ctermbg=0
 	autocmd ColorSchemePre,ColorScheme twilight256 highlight Visual ctermfg=7
 	autocmd ColorSchemePre,ColorScheme twilight256 highlight CursorLineNr ctermbg=8 ctermfg=4
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight Search ctermbg=245 ctermfg=0
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight CurSearch ctermbg=3 ctermfg=0
+	" Coc highlight settings
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight Conceal cterm=underline ctermbg=none ctermfg=9
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight CocInlayHint ctermbg=none ctermfg=181
+	autocmd ColorSchemePre,ColorScheme twilight256 highlight CocFloating ctermbg=232 
+augroup end
+
+augroup miminalist_config
+	autocmd!
+	" Generic highlight settings
+	autocmd ColorSchemePre,ColorScheme minimalist highlight CursorLine ctermbg=236
+	autocmd ColorSchemePre,ColorScheme minimalist highlight CursorLineNr ctermbg=236 ctermfg=4
+	autocmd ColorSchemePre,ColorScheme minimalist highlight Visual ctermfg=7
+	autocmd ColorSchemePre,ColorScheme minimalist highlight Search ctermbg=15 ctermfg=12 cterm=standout
+	autocmd ColorSchemePre,ColorScheme minimalist highlight IncSearch ctermbg=15 ctermfg=12 cterm=standout
+	autocmd colorschemepre,colorscheme minimalist highlight cursearch ctermbg=3 ctermfg=0
+	autocmd ColorSchemePre,ColorScheme minimalist highlight NonText ctermbg=none ctermfg=none
+	" Coc highlight settings
+	autocmd ColorSchemePre,ColorScheme minimalist highlight Conceal cterm=underline ctermfg=9
+	autocmd ColorSchemePre,ColorScheme minimalist highlight CocInlayHint ctermbg=none ctermfg=181
+	autocmd ColorSchemePre,ColorScheme minimalist highlight CocFloating ctermbg=232 
 augroup end
 
 " NAV: nav-augroup-rdark
 augroup rdark_config
 	autocmd!
 	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight CursorLine ctermbg=0
-	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight Visual ctermfg=0 ctermbg=8
+	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight Visual ctermfg=15 ctermbg=0
 	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight CursorLineNr ctermbg=0 ctermfg=4
+	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight Conceal cterm=underline ctermbg=none ctermfg=9
+	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight IncSearch ctermfg=0
+	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight Search ctermbg=7 ctermfg=0
+	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight CurSearch ctermbg=3 ctermfg=0
+	" Coc settings
+	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight CocInlayHint ctermbg=none ctermfg=181
+	autocmd ColorSchemePre,ColorScheme rdark-terminal2 highlight CocFloating ctermbg=232 
 augroup end
 
 
 " NAV: nav-augroup-habamax
 augroup habamax_config
 	autocmd!
-	autocmd ColorSchemePre,ColorScheme habamax highlight CursorLineNr ctermbg=236
-	autocmd ColorSchemePre,ColorScheme habamax highlight CursorLineNr ctermbg=236
+	autocmd ColorSchemePre,ColorScheme habamax highlight Visual ctermfg=249 ctermbg=233
+	autocmd ColorSchemePre,ColorScheme habamax highlight CursorLineNr ctermbg=233 ctermfg=5
+	autocmd ColorSchemePre,ColorScheme habamax highlight CursorLine ctermbg=233
+	autocmd ColorSchemePre,ColorScheme habamax highlight Search ctermbg=234 ctermfg=215
+	autocmd ColorSchemePre,ColorScheme habamax highlight CurSearch ctermbg=5 ctermfg=0
+
+	" Coc-settings
+	autocmd ColorSchemePre,ColorScheme habamax highlight Conceal cterm=underline ctermbg=none ctermfg=8
+	autocmd ColorSchemePre,ColorScheme habamax highlight CocInlayHint ctermbg=none ctermfg=102
+	autocmd ColorSchemePre,ColorScheme habamax highlight CocFloating ctermbg=232 
 augroup end
 
 " NAV: nav-augroup-nord
 augroup nord_config 
 	autocmd!
-	autocmd ColorSchemePre,ColorScheme nord highlight Visual ctermfg=14
-	autocmd ColorSchemePre,ColorScheme nord highlight Visual ctermfg=14
-	autocmd ColorSchemePre,ColorScheme nord highlight CursorLineNr ctermbg=0 ctermfg=4
+	autocmd ColorSchemePre,ColorScheme nord highlight Visual ctermfg=249 ctermbg=233
+	autocmd ColorSchemePre,ColorScheme nord highlight CursorLineNr ctermbg=233 ctermfg=4
+	autocmd ColorSchemePre,ColorScheme nord highlight CursorLine ctermbg=233
+
+	autocmd ColorSchemePre,ColorScheme nord highlight CocInlayHint ctermbg=none ctermfg=103
+	autocmd ColorSchemePre,ColorScheme nord highlight CocFloating ctermbg=232 
+augroup end
+
+" NAV: nav-augroup-mies
+augroup mies_config 
+	set background=dark
+	autocmd ColorSchemePre,ColorScheme mies highlight Visual ctermfg=249 ctermbg=233
+	autocmd ColorSchemePre,ColorScheme mies highlight CursorLineNr ctermbg=233 
+	autocmd ColorSchemePre,ColorScheme mies highlight CursorLine ctermbg=233
+
+	autocmd ColorSchemePre,ColorScheme mies highlight CocInlayHint ctermbg=none ctermfg=102
+	autocmd ColorSchemePre,ColorScheme mies highlight CocFloating ctermbg=232 
+	autocmd ColorSchemePre,ColorScheme mies highlight Search ctermbg=238 ctermfg=7 
+	autocmd ColorSchemePre,ColorScheme mies highlight CurSearch ctermbg=238 ctermfg=7 
+	autocmd ColorSchemePre,ColorScheme mies highlight IncSearch ctermbg=238 ctermfg=7
 augroup end
 
 " set color scheme
-colorscheme rdark-terminal2
+colorscheme minimalist
 " favorite color-schemes
 " happy_hacking " note need to adjust highlighting
 " rdark-terminal2 " note need to adjust highlighting
@@ -247,7 +307,23 @@ vnoremap <leader>cc "*y
 " indent selected lines
 vnoremap <leader>id =<esc>
 
-" Surround selected text with character
+" Use L, H for visual mode movements
+vnoremap L $
+vnoremap H 0
+vnoremap J 25j
+vnoremap K 25k
+
+" Wrap selected text with character
+function! Wrap()
+	let ch = input('char: ')
+	if len(ch) ==# 1
+		execute "normal! \<esc>`>a" .ch. " \<esc>`<i" .ch. "\<esc>"
+	else
+		echom "should only input one character"
+	endif
+endfunction
+
+vnoremap <leader>su :call Wrap()<CR>
 vnoremap "" <esc>`>a"<esc>`<i"<esc>b
 vnoremap '' <esc>`>a'<esc>`<i'<esc>b
 vnoremap (( <esc>`>a)<esc>`<i(<esc>b
@@ -313,15 +389,15 @@ nnoremap <C-w><C-j> :echoe "Use \<leader\>wj"<CR>
 
 " only allow vim motions
 " TODO: need to update motions that use <Left>, <Right>, <Up>, <Down>
-nnoremap <Left>  :echoe Use h<CR>
-nnoremap <Right> :echoe Use l<CR>
-nnoremap <Up>    :echoe Use k<CR>
-nnoremap <Down>  :echoe Use j<CR>
+nnoremap <Left>  :echoe "Use h"<CR>
+nnoremap <Right> :echoe "Use l"<CR>
+" Up and Down are delegated to CocScroll
+
 " ...and in insert mode
-inoremap <Left>  <ESC>:echoe Use h<CR>
-inoremap <Right> <ESC>:echoe Use l<CR>
-inoremap <Up>    <ESC>:echoe Use k<CR>
-inoremap <Down>  <ESC>:echoe Use j<CR>
+inoremap <Left>  <ESC>:echoe "Use h"<CR>
+inoremap <Right> <ESC>:echoe "Use l"<CR>
+inoremap <Up>    <ESC>:echoe "Use k"<CR>
+inoremap <Down>  <ESC>:echoe "Use j"<CR>
 
 " }}}
 
@@ -460,9 +536,13 @@ highlight ModeMsg ctermbg=NONE ctermfg=7
 " Visual mode settings
 highlight Visual cterm=NONE
 " Search settings
-highlight Search ctermbg=13 ctermfg=15
-highlight CurSearch cterm=bold ctermbg=11 ctermfg=0
+highlight CurSearch cterm=bold 
 
+" augroup syntaxHighlighting
+" 	autocmd!
+" 	autocmd Syntax * syntax keyword CommentMarker ISSUE NOTE contained
+" 	autocmd Syntax * syntax match Comment contains=Todo
+" augroup end
 " }}}
 
 " Custom Highlight Groups ----------------------------------------------------------- {{{
@@ -722,6 +802,7 @@ let g:go_doc_keywordprg_enabled = 0
 " https://raw.githubusercontent.com/neoclide/coc.nvim/master/doc/coc-example-config.vim
 " NAV: nav-cocconfig
 
+
 " FEATURE: Tab Completion
 " Use tab for trigger completion with characters ahead and navigate
 inoremap <silent><expr> <TAB>
@@ -751,7 +832,7 @@ nnoremap <leader> gy <Plug>(coc-type-definition)
 nnoremap <leader> gi <Plug>(coc-implementation)
 nnoremap <leader> gr <Plug>(coc-references)
 
-" Use K to show documentation in preview window
+" Use <leader>doc to show documentation in preview window
 nnoremap <leader>doc :call ShowDocumentation()<CR>
 
 function! ShowDocumentation()
@@ -763,8 +844,8 @@ function! ShowDocumentation()
 endfunction
 
 " Highlight the symbol and its references when holding the cursor
+highlight CocHighlightText cterm=Bold,Underline
 autocmd CursorHold * silent call CocActionAsync('highlight')
-highlight CocHighlightText cterm=Bold ctermfg=12 ctermbg=None
 
 " Symbol renaming
 nnoremap <leader>rn <Plug>(coc-rename)
@@ -780,21 +861,21 @@ augroup mygroup
 augroup end
 
 " Applying code actions to the selected code block
-" Example: `<leader>aap` for current paragraph
-xnoremap <leader>a  <Plug>(coc-codeaction-selected)
-nnoremap <leader>a  <Plug>(coc-codeaction-selected)
+" Example: `<leader>aa` for current paragraph
+nnoremap <leader>a <Plug>(coc-codeaction-selected)
+xnoremap <leader>a <Plug>(coc-codeaction-selected)
 
 " Remap keys for applying code actions at the cursor position
-nnoremap <leader>ac  <Plug>(coc-codeaction-cursor)
+nnoremap <leader>ac <Plug>(coc-codeaction-cursor)
 " Remap keys for apply code actions affect whole buffer
-nnoremap <leader>as  <Plug>(coc-codeaction-source)
+nnoremap <leader>as <Plug>(coc-codeaction-source)
 " Apply the most preferred quickfix action to fix diagnostic on the current line
-nnoremap <leader>qf  <Plug>(coc-fix-current)
+nnoremap <leader>qf <Plug>(coc-fix-current 
 
 " Remap keys for applying refactor code actions
 nnoremap <silent> <leader>re <Plug>(coc-codeaction-refactor)
-xnoremap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
-nnoremap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+xnoremap <silent> <leader>re  <Plug>(coc-codeaction-refactor-selected)
+nnoremap <silent> <leader>re  <Plug>(coc-codeaction-refactor-selected)
 
 " Map function and class text orrowbjects
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server
@@ -807,15 +888,9 @@ onoremap ic <Plug>(coc-classobj-i)
 xnoremap ac <Plug>(coc-classobj-a)
 onoremap ac <Plug>(coc-classobj-a)
 
-" Remap <C-f> and <C-b> to scroll float windows/popups
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-	nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-	nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-	nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-	nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-	vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-	vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
+" NAV: nav-coc-menu-scroll
+nnoremap <silent><nowait><expr> <Down> coc#float#has_scroll() ? coc#float#scroll(1) : ":echoe \"Use j\"<CR>"
+nnoremap <silent><nowait><expr> <Up> coc#float#has_scroll() ? coc#float#scroll(0) : ":echoe \"Use k\"<CR>"
 
 " Use CTRL-S for selections ranges
 " Requires 'textDocument/selectionRange' support of language server
